@@ -20,12 +20,12 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.concurrent.TimeUnit
 
-class GoogleFitHelper(val activity: Activity,val setSteps:(s:String)->Unit) {
+class GoogleFitFitnessRepo(val activity: Activity, val setSteps:(s:String)->Unit):FitnessRepo {
 
     val TAG = "Google Fit Helper"
     lateinit var fitnessOptions : FitnessOptions
     @RequiresApi(Build.VERSION_CODES.O)
-    fun requestGoogleFitPermissions() {
+    override fun requestGoogleFitPermissions() {
         if (ContextCompat.checkSelfPermission(activity,"android.permission.ACTIVITY_RECOGNITION")
             != PackageManager.PERMISSION_GRANTED) {
             // Permission is not granted
@@ -51,7 +51,7 @@ class GoogleFitHelper(val activity: Activity,val setSteps:(s:String)->Unit) {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun readStepsCount() {
+    override fun readStepsCount() {
         Fitness.getRecordingClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
             .listSubscriptions()
             .addOnSuccessListener { subscriptions ->

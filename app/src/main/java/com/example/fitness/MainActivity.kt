@@ -2,34 +2,19 @@ package com.example.fitness
 
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.fitness.Fitness
-import com.google.android.gms.fitness.FitnessOptions
-import com.google.android.gms.fitness.data.DataSource
-import com.google.android.gms.fitness.data.DataType
-import com.google.android.gms.fitness.data.Field
-import com.google.android.gms.fitness.request.DataReadRequest
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
     val TAG = "Fitness"
     lateinit var button:Button
     lateinit var steps_tv:TextView
-    val googleFitHelper = GoogleFitHelper(this,{text->
+    val googleFitFitnessRepo:FitnessRepo = GoogleFitFitnessRepo(this,{ text->
         steps_tv.setText(text)
     })
 
@@ -40,10 +25,10 @@ class MainActivity : AppCompatActivity() {
         button = findViewById(R.id.button)
         steps_tv = findViewById(R.id.steps_tv)
 
-        googleFitHelper.requestGoogleFitPermissions()
+        googleFitFitnessRepo.requestGoogleFitPermissions()
 
         button.setOnClickListener {
-            googleFitHelper.readStepsCount()
+            googleFitFitnessRepo.readStepsCount()
         }
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
