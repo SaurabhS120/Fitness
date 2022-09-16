@@ -14,3 +14,5 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Fitness"
 include ':app'
+include ':fitness:domain'
+include ':fitness:repo:google_fit'

@@ -1,4 +1,4 @@
-package com.example.fitness
+package com.example.google_fit
 
 import android.app.Activity
 import android.content.pm.PackageManager
@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.domain.FitnessRepo
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
@@ -20,7 +21,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.concurrent.TimeUnit
 
-class GoogleFitFitnessRepo(val activity: Activity, val setSteps:(s:String)->Unit):FitnessRepo {
+class GoogleFitFitnessRepo(val activity: Activity, val setSteps:(steps:Int)->Unit): FitnessRepo {
 
     val TAG = "Google Fit Helper"
     lateinit var fitnessOptions : FitnessOptions
@@ -94,7 +95,7 @@ class GoogleFitFitnessRepo(val activity: Activity, val setSteps:(s:String)->Unit
                     .flatMap { it.dataPoints }
                     .sumBy { it.getValue(Field.FIELD_STEPS).asInt() }
                 Log.d(TAG, "Total steps: $totalSteps")
-                setSteps("Total steps: $totalSteps")
+                setSteps(totalSteps)
             }
 
     }

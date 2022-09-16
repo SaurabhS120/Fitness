@@ -1,4 +1,4 @@
-package com.example.fitness
+package com.example.domain
 
 interface FitnessRepo {
     fun requestGoogleFitPermissions()

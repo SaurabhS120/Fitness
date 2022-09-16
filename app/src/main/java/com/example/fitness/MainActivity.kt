@@ -9,14 +9,17 @@ import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import com.example.domain.FitnessRepo
+import com.example.google_fit.GoogleFitFitnessRepo
 
 class MainActivity : AppCompatActivity() {
     val TAG = "Fitness"
     lateinit var button:Button
     lateinit var steps_tv:TextView
-    val googleFitFitnessRepo:FitnessRepo = GoogleFitFitnessRepo(this,{ text->
-        steps_tv.setText(text)
-    })
+    val fitnessRepo: FitnessRepo =
+        GoogleFitFitnessRepo(this, { steps->
+            steps_tv.setText("Total steps: $steps")
+        })
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,10 +28,10 @@ class MainActivity : AppCompatActivity() {
         button = findViewById(R.id.button)
         steps_tv = findViewById(R.id.steps_tv)
 
-        googleFitFitnessRepo.requestGoogleFitPermissions()
+        fitnessRepo.requestGoogleFitPermissions()
 
         button.setOnClickListener {
-            googleFitFitnessRepo.readStepsCount()
+            fitnessRepo.readStepsCount()
         }
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -37,6 +40,8 @@ class MainActivity : AppCompatActivity() {
             Activity.RESULT_OK -> when (requestCode) {
                 1 -> {
                     Log.d(TAG,"Login success")
+                    fitnessRepo.readStepsCount()
+
                 }
                 else -> {
                     // Result wasn't from Google Fit
