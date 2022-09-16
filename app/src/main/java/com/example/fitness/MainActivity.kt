@@ -29,108 +29,22 @@ class MainActivity : AppCompatActivity() {
     val TAG = "Fitness"
     lateinit var button:Button
     lateinit var steps_tv:TextView
-    lateinit var fitnessOptions : FitnessOptions
+    val googleFitHelper = GoogleFitHelper(this,{text->
+        steps_tv.setText(text)
+    })
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         button = findViewById(R.id.button)
         steps_tv = findViewById(R.id.steps_tv)
-        if (ContextCompat.checkSelfPermission(this,"android.permission.ACTIVITY_RECOGNITION")
-            != PackageManager.PERMISSION_GRANTED) {
-            // Permission is not granted
-            Toast.makeText(this,"Permission is not granted",Toast.LENGTH_LONG).show()
-            ActivityCompat.requestPermissions(this,
-                arrayOf("android.permission.ACTIVITY_RECOGNITION"),
-                0)
-        }
-        fitnessOptions = FitnessOptions.builder()
-            .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
-            .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
-            .build()
-        val account = GoogleSignIn.getAccountForExtension(this, fitnessOptions)
-        if (!GoogleSignIn.hasPermissions(account, fitnessOptions)) {
-            GoogleSignIn.requestPermissions(
-                this, // your activity
-                1, // e.g. 1
-                account,
-                fitnessOptions)
-        } else {
-            accessGoogleFit()
-        }
+
+        googleFitHelper.requestGoogleFitPermissions()
 
         button.setOnClickListener {
-            readStepsCount()
+            googleFitHelper.readStepsCount()
         }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun readStepsCount() {
-        Fitness.getRecordingClient(this, GoogleSignIn.getAccountForExtension(this, fitnessOptions))
-            .listSubscriptions()
-            .addOnSuccessListener { subscriptions ->
-                for (sc in subscriptions) {
-                    val dt = sc.dataType
-                    Log.d(TAG, "Active subscription for data type: ${dt?.name}")
-                }
-            }
-        Fitness.getHistoryClient(this, GoogleSignIn.getAccountForExtension(this, fitnessOptions))
-            .readDailyTotal(DataType.TYPE_STEP_COUNT_DELTA)
-            .addOnSuccessListener { result ->
-                val totalSteps =
-                    result.dataPoints.firstOrNull()?.getValue(Field.FIELD_STEPS)?.asInt() ?: 0
-                // Do something with totalSteps
-            }
-            .addOnFailureListener { e ->
-                Log.d(TAG, "There was a problem getting steps.", e)
-            }
-        val startTime = LocalDate.now().atStartOfDay(ZoneId.systemDefault())
-        val endTime = LocalDateTime.now().atZone(ZoneId.systemDefault())
-
-        val datasource = DataSource.Builder()
-            .setAppPackageName("com.google.android.gms")
-            .setDataType(DataType.TYPE_STEP_COUNT_DELTA)
-            .setType(DataSource.TYPE_DERIVED)
-            .setStreamName("estimated_steps")
-            .build()
-
-        val request = DataReadRequest.Builder()
-            .aggregate(datasource)
-            .bucketByTime(1, TimeUnit.DAYS)
-            .setTimeRange(startTime.toEpochSecond(), endTime.toEpochSecond(), TimeUnit.SECONDS)
-            .build()
-
-        Fitness.getHistoryClient(this, GoogleSignIn.getAccountForExtension(this, fitnessOptions))
-            .readData(request)
-            .addOnSuccessListener { response ->
-                val totalSteps = response.buckets
-                    .flatMap { it.dataSets }
-                    .flatMap { it.dataPoints }
-                    .sumBy { it.getValue(Field.FIELD_STEPS).asInt() }
-                Log.d(TAG, "Total steps: $totalSteps")
-                steps_tv.setText("Total steps: $totalSteps")
-            }
-
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun accessGoogleFit() {
-        Log.d(TAG,"accessGoogleFit")
-        subscribeFitness()
-        readStepsCount()
-    }
-
-    fun subscribeFitness(){
-        Fitness.getRecordingClient(this, GoogleSignIn.getAccountForExtension(this, fitnessOptions))
-            // This example shows subscribing to a DataType, across all possible data
-            // sources. Alternatively, a specific DataSource can be used.
-            .subscribe(DataType.TYPE_STEP_COUNT_DELTA)
-            .addOnSuccessListener {
-                Log.d(TAG, "Successfully subscribed!")
-            }
-            .addOnFailureListener { e ->
-                Log.d(TAG, "There was a problem subscribing.", e)
-            }
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
