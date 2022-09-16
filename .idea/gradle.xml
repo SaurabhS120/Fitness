@@ -14,6 +14,7 @@
             <option value="$PROJECT_DIR$/fitness" />
             <option value="$PROJECT_DIR$/fitness/domain" />
             <option value="$PROJECT_DIR$/fitness/repo" />
+            <option value="$PROJECT_DIR$/fitness/repo/dummy" />
             <option value="$PROJECT_DIR$/fitness/repo/google_fit" />
           </set>
         </option>

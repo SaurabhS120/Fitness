@@ -13,11 +13,11 @@ import com.example.domain.FitnessRepo
 import com.example.google_fit.GoogleFitFitnessRepo
 
 class MainActivity : AppCompatActivity() {
-    val TAG = "Fitness"
-    lateinit var button:Button
-    lateinit var steps_tv:TextView
-    val fitnessRepo: FitnessRepo =
-        GoogleFitFitnessRepo(this)
+    private val TAG = "Fitness"
+    private lateinit var button:Button
+    private lateinit var steps_tv:TextView
+    private val fitnessRepo: FitnessRepo =
+        Repo.fitnessRepo(this)
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {

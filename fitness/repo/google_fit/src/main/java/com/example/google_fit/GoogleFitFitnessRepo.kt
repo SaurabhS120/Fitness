@@ -23,8 +23,8 @@ import java.util.concurrent.TimeUnit
 
 class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
 
-    val TAG = "Google Fit Helper"
-    lateinit var fitnessOptions : FitnessOptions
+    private val TAG = "Google Fit Helper"
+    private lateinit var fitnessOptions : FitnessOptions
     private var setSteps:((steps:Int)->Unit)? = null
     @RequiresApi(Build.VERSION_CODES.O)
     override fun requestGoogleFitPermissions() {
@@ -112,7 +112,7 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
         readStepsCount()
     }
 
-    fun subscribeFitness(){
+    private fun subscribeFitness(){
         Fitness.getRecordingClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
             // This example shows subscribing to a DataType, across all possible data
             // sources. Alternatively, a specific DataSource can be used.
