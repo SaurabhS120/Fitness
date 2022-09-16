@@ -21,10 +21,11 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.concurrent.TimeUnit
 
-class GoogleFitFitnessRepo(val activity: Activity, val setSteps:(steps:Int)->Unit): FitnessRepo {
+class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
 
     val TAG = "Google Fit Helper"
     lateinit var fitnessOptions : FitnessOptions
+    private var setSteps:((steps:Int)->Unit)? = null
     @RequiresApi(Build.VERSION_CODES.O)
     override fun requestGoogleFitPermissions() {
         if (ContextCompat.checkSelfPermission(activity,"android.permission.ACTIVITY_RECOGNITION")
@@ -95,9 +96,13 @@ class GoogleFitFitnessRepo(val activity: Activity, val setSteps:(steps:Int)->Uni
                     .flatMap { it.dataPoints }
                     .sumBy { it.getValue(Field.FIELD_STEPS).asInt() }
                 Log.d(TAG, "Total steps: $totalSteps")
-                setSteps(totalSteps)
+                setSteps?.invoke(totalSteps)
             }
 
+    }
+
+    override fun setOnStepsChange(setSteps: (steps: Int) -> Unit) {
+        this.setSteps = setSteps
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

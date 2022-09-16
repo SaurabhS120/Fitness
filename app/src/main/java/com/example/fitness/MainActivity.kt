@@ -17,9 +17,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var button:Button
     lateinit var steps_tv:TextView
     val fitnessRepo: FitnessRepo =
-        GoogleFitFitnessRepo(this, { steps->
-            steps_tv.setText("Total steps: $steps")
-        })
+        GoogleFitFitnessRepo(this)
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,7 +25,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         button = findViewById(R.id.button)
         steps_tv = findViewById(R.id.steps_tv)
-
+        fitnessRepo.setOnStepsChange { steps->
+            steps_tv.setText("Total steps: $steps")
+        }
         fitnessRepo.requestGoogleFitPermissions()
 
         button.setOnClickListener {
