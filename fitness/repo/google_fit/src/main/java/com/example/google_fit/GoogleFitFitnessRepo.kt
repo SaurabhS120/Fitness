@@ -26,6 +26,7 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
     private val TAG = "Google Fit Helper"
     private lateinit var fitnessOptions : FitnessOptions
     private var setSteps:((steps:Int)->Unit)? = null
+    private var setCalories:((steps:Int)->Unit)? = null
     @RequiresApi(Build.VERSION_CODES.O)
     override fun requestGoogleFitPermissions() {
         if (ContextCompat.checkSelfPermission(activity,"android.permission.ACTIVITY_RECOGNITION")
@@ -39,6 +40,8 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
         fitnessOptions = FitnessOptions.builder()
             .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
             .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
+            .addDataType(DataType.TYPE_CALORIES_EXPENDED, FitnessOptions.ACCESS_READ)
+            .addDataType(DataType.AGGREGATE_CALORIES_EXPENDED, FitnessOptions.ACCESS_READ)
             .build()
         val account = GoogleSignIn.getAccountForExtension(activity, fitnessOptions)
         if (!GoogleSignIn.hasPermissions(account, fitnessOptions)) {
@@ -101,15 +104,46 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun readCaloriesCount() {
+        Fitness.getRecordingClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
+            .listSubscriptions()
+            .addOnSuccessListener { subscriptions ->
+                for (sc in subscriptions) {
+                    val dt = sc.dataType
+                    Log.d(TAG, "Active subscription for data type: ${dt?.name}")
+                }
+            }
+        Fitness.getHistoryClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
+            .readDailyTotal(DataType.TYPE_CALORIES_EXPENDED)
+            .addOnSuccessListener { result ->
+                val totalCalories =
+                    result.dataPoints.firstOrNull()?.getValue(Field.FIELD_CALORIES)?.asFloat() ?: 0
+                Log.d("Total Calories",totalCalories.toString())
+                setCalories?.invoke(totalCalories.toInt())
+                // Do something with totalSteps
+            }
+            .addOnFailureListener { e ->
+                Log.d(TAG, "There was a problem getting steps.", e)
+            }
+
+    }
+
     override fun setOnStepsChange(setSteps: (steps: Int) -> Unit) {
         this.setSteps = setSteps
+    }
+
+    override fun setOnCaloriesChange(setCalories: (steps: Int) -> Unit) {
+        this.setCalories = setCalories
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun accessGoogleFit() {
         Log.d(TAG,"accessGoogleFit")
         subscribeFitness()
+        subscribeCalories()
         readStepsCount()
+        readCaloriesCount()
     }
 
     private fun subscribeFitness(){
@@ -117,6 +151,19 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
             // This example shows subscribing to a DataType, across all possible data
             // sources. Alternatively, a specific DataSource can be used.
             .subscribe(DataType.TYPE_STEP_COUNT_DELTA)
+            .addOnSuccessListener {
+                Log.d(TAG, "Successfully subscribed!")
+            }
+            .addOnFailureListener { e ->
+                Log.d(TAG, "There was a problem subscribing.", e)
+            }
+    }
+
+    private fun subscribeCalories(){
+        Fitness.getRecordingClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
+            // This example shows subscribing to a DataType, across all possible data
+            // sources. Alternatively, a specific DataSource can be used.
+            .subscribe(DataType.TYPE_CALORIES_EXPENDED)
             .addOnSuccessListener {
                 Log.d(TAG, "Successfully subscribed!")
             }
