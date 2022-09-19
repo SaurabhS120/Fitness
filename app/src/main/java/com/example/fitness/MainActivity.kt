@@ -17,6 +17,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var button:Button
     private lateinit var steps_tv:TextView
     private lateinit var calories_tv:TextView
+    private lateinit var heartPoints_tv:TextView
     private val fitnessRepo: FitnessRepo =
         Repo.fitnessRepo(this)
 
@@ -27,26 +28,31 @@ class MainActivity : AppCompatActivity() {
         button = findViewById(R.id.button)
         steps_tv = findViewById(R.id.steps_tv)
         calories_tv = findViewById(R.id.calories_tv)
+        heartPoints_tv = findViewById(R.id.heart_points_tv)
         fitnessRepo.setOnStepsChange { steps->
             steps_tv.setText("Total steps: $steps")
         }
         fitnessRepo.setOnCaloriesChange { calories->
             calories_tv.setText("Total calories : $calories")
         }
+        fitnessRepo.setOnHeartPointsChange { heartPoints->
+            heartPoints_tv.setText("Total heart points : $heartPoints")
+        }
         fitnessRepo.requestGoogleFitPermissions()
 
         button.setOnClickListener {
             fitnessRepo.readStepsCount()
             fitnessRepo.readCaloriesCount()
+            fitnessRepo.readHeartPointsCount()
         }
     }
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (resultCode) {
             Activity.RESULT_OK -> when (requestCode) {
                 1 -> {
                     Log.d(TAG,"Login success")
-                    fitnessRepo.readStepsCount()
 
                 }
                 else -> {
