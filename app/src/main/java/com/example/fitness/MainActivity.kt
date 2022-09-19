@@ -11,9 +11,8 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import com.example.domain.FitnessRepo
+import com.example.fitness.databinding.ActivityFitnessBinding
 import com.example.fitness.databinding.ActivityMainBinding
-import com.example.google_fit.GoogleFitFitnessRepo
 
 class MainActivity : AppCompatActivity() {
     private val TAG = "Fitness"
@@ -21,7 +20,7 @@ class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = ActivityMainBinding.inflate(LayoutInflater.from(this),null,false)
+        val binding = ActivityFitnessBinding.inflate(LayoutInflater.from(this),null,false)
         setContentView(binding.root)
         binding.lifecycleOwner = this
         val viewModel: FitnessViewModel by viewModels()
