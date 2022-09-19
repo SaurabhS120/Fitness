@@ -35,9 +35,17 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
         if (ContextCompat.checkSelfPermission(activity,"android.permission.ACTIVITY_RECOGNITION")
             != PackageManager.PERMISSION_GRANTED) {
             // Permission is not granted
-            Toast.makeText(activity,"Permission is not granted", Toast.LENGTH_LONG).show()
+            Toast.makeText(activity,"Activity recognition Permission is not granted", Toast.LENGTH_LONG).show()
             ActivityCompat.requestPermissions(activity,
                 arrayOf("android.permission.ACTIVITY_RECOGNITION"),
+                0)
+        }
+        if (ContextCompat.checkSelfPermission(activity,"android.permission.ACCESS_FINE_LOCATION")
+            != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            Toast.makeText(activity,"Location Permission is not granted", Toast.LENGTH_LONG).show()
+            ActivityCompat.requestPermissions(activity,
+                arrayOf("android.permission.ACCESS_FINE_LOCATION"),
                 0)
         }
         fitnessOptions = FitnessOptions.builder()
@@ -71,7 +79,7 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
             .addOnSuccessListener { subscriptions ->
                 for (sc in subscriptions) {
                     val dt = sc.dataType
-                    Log.d(TAG, "Active subscription for data type: ${dt?.name}")
+                    Log.i(TAG, "Active subscription for data type: ${dt?.name}")
                 }
             }
         Fitness.getHistoryClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
@@ -82,7 +90,7 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
                 // Do something with totalSteps
             }
             .addOnFailureListener { e ->
-                Log.d(TAG, "There was a problem getting steps.", e)
+                Log.e(TAG, "There was a problem getting steps.", e)
             }
         val startTime = LocalDate.now().atStartOfDay(ZoneId.systemDefault())
         val endTime = LocalDateTime.now().atZone(ZoneId.systemDefault())
@@ -107,7 +115,7 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
                     .flatMap { it.dataSets }
                     .flatMap { it.dataPoints }
                     .sumBy { it.getValue(Field.FIELD_STEPS).asInt() }
-                Log.d(TAG, "Total steps: $totalSteps")
+                Log.i(TAG, "Total steps: $totalSteps")
                 setSteps?.invoke(totalSteps)
             }
 
@@ -120,7 +128,7 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
             .addOnSuccessListener { subscriptions ->
                 for (sc in subscriptions) {
                     val dt = sc.dataType
-                    Log.d(TAG, "Active subscription for data type: ${dt?.name}")
+                    Log.i(TAG, "Active subscription for data type: ${dt?.name}")
                 }
             }
         Fitness.getHistoryClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
@@ -128,12 +136,12 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
             .addOnSuccessListener { result ->
                 val totalCalories =
                     result.dataPoints.firstOrNull()?.getValue(Field.FIELD_CALORIES)?.asFloat() ?: 0
-                Log.d("Total Calories",totalCalories.toString())
+                Log.i("Total Calories",totalCalories.toString())
                 setCalories?.invoke(totalCalories.toInt())
                 // Do something with totalSteps
             }
             .addOnFailureListener { e ->
-                Log.d(TAG, "There was a problem getting steps.", e)
+                Log.e(TAG, "There was a problem getting steps.", e)
             }
 
     }
@@ -145,7 +153,7 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
             .addOnSuccessListener { subscriptions ->
                 for (sc in subscriptions) {
                     val dt = sc.dataType
-                    Log.d(TAG, "Active subscription for data type: ${dt?.name}")
+                    Log.i(TAG, "Active subscription for data type: ${dt?.name}")
                 }
             }
         Fitness.getHistoryClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
@@ -153,12 +161,12 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
             .addOnSuccessListener { result ->
                 val totalHeartPoints =
                     result.dataPoints.firstOrNull()?.getValue(Field.FIELD_INTENSITY)?.asFloat() ?: 0
-                Log.d("Total Calories",totalHeartPoints.toString())
+                Log.i("Total Calories",totalHeartPoints.toString())
                 setHeartPoints?.invoke(totalHeartPoints.toInt())
                 // Do something with totalSteps
             }
             .addOnFailureListener { e ->
-                Log.d(TAG, "There was a problem getting steps.", e)
+                Log.e(TAG, "There was a problem getting steps.", e)
             }
 
     }
@@ -170,7 +178,7 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
             .addOnSuccessListener { subscriptions ->
                 for (sc in subscriptions) {
                     val dt = sc.dataType
-                    Log.d(TAG, "Active subscription for data type: ${dt?.name}")
+                    Log.i(TAG, "Active subscription for data type: ${dt?.name}")
                 }
             }
         Fitness.getHistoryClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
@@ -178,11 +186,11 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
             .addOnSuccessListener { result ->
                 val totalDistanceWalked =
                     result.dataPoints.firstOrNull()?.getValue(Field.FIELD_DISTANCE )?.asFloat() ?: 0
-                Log.d("Total distance walked",totalDistanceWalked.toString())
+                Log.i("Total distance walked",totalDistanceWalked.toString())
                 setDistanceWalked?.invoke(totalDistanceWalked.toInt())
             }
             .addOnFailureListener { e ->
-                Log.d(TAG, "There was a problem getting steps.", e)
+                Log.e(TAG, "There was a problem getting steps.", e)
             }
 
     }
@@ -194,7 +202,7 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
             .addOnSuccessListener { subscriptions ->
                 for (sc in subscriptions) {
                     val dt = sc.dataType
-                    Log.d(TAG, "Active subscription for data type: ${dt?.name}")
+                    Log.i(TAG, "Active subscription for data type: ${dt?.name}")
                 }
             }
         Fitness.getHistoryClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
@@ -202,11 +210,11 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
             .addOnSuccessListener { result ->
                 val totalMoveMin =
                     result.dataPoints.firstOrNull()?.getValue(Field.FIELD_DURATION )?.asInt() ?: 0
-                Log.d("Total moved min",totalMoveMin.toString())
+                Log.i("Total moved min",totalMoveMin.toString())
                 setMoveMin?.invoke(totalMoveMin)
             }
             .addOnFailureListener { e ->
-                Log.d(TAG, "There was a problem getting steps.", e)
+                Log.e(TAG, "There was a problem getting steps.", e)
             }
 
     }
@@ -233,7 +241,7 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun accessGoogleFit() {
-        Log.d(TAG,"accessGoogleFit")
+        Log.i(TAG,"accessGoogleFit")
         subscribeFitness()
         subscribeCalories()
         subscribeHeartPoints()
@@ -252,10 +260,10 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
             // sources. Alternatively, a specific DataSource can be used.
             .subscribe(DataType.TYPE_STEP_COUNT_DELTA)
             .addOnSuccessListener {
-                Log.d(TAG, "Successfully subscribed!")
+                Log.i(TAG, "Successfully subscribed!")
             }
             .addOnFailureListener { e ->
-                Log.d(TAG, "There was a problem subscribing.", e)
+                Log.e(TAG, "There was a problem subscribing.", e)
             }
     }
 
@@ -265,10 +273,10 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
             // sources. Alternatively, a specific DataSource can be used.
             .subscribe(DataType.TYPE_CALORIES_EXPENDED)
             .addOnSuccessListener {
-                Log.d(TAG, "Successfully subscribed!")
+                Log.i(TAG, "Successfully subscribed!")
             }
             .addOnFailureListener { e ->
-                Log.d(TAG, "There was a problem subscribing.", e)
+                Log.e(TAG, "There was a problem subscribing.", e)
             }
     }
 
@@ -278,10 +286,10 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
             // sources. Alternatively, a specific DataSource can be used.
             .subscribe(DataType.TYPE_HEART_POINTS)
             .addOnSuccessListener {
-                Log.d(TAG, "Successfully subscribed!")
+                Log.i(TAG, "Successfully subscribed!")
             }
             .addOnFailureListener { e ->
-                Log.d(TAG, "There was a problem subscribing.", e)
+                Log.e(TAG, "There was a problem subscribing.", e)
             }
     }
 
@@ -291,10 +299,10 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
             // sources. Alternatively, a specific DataSource can be used.
             .subscribe(DataType.TYPE_DISTANCE_DELTA)
             .addOnSuccessListener {
-                Log.d(TAG, "Successfully subscribed!")
+                Log.i(TAG, "Successfully subscribed!")
             }
             .addOnFailureListener { e ->
-                Log.d(TAG, "There was a problem subscribing.", e)
+                Log.e(TAG, "There was a problem subscribing.", e)
             }
     }
 
@@ -304,10 +312,10 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
             // sources. Alternatively, a specific DataSource can be used.
             .subscribe(DataType.TYPE_MOVE_MINUTES)
             .addOnSuccessListener {
-                Log.d(TAG, "Successfully subscribed!")
+                Log.i(TAG, "Successfully subscribed!")
             }
             .addOnFailureListener { e ->
-                Log.d(TAG, "There was a problem subscribing.", e)
+                Log.e(TAG, "There was a problem subscribing.", e)
             }
     }
 }
