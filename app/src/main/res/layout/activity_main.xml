@@ -29,6 +29,16 @@
             tools:text="heart points"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/walked_distance_tv"
+            tools:text="Walked distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/move_min_tv"
+            tools:text="Moved Min"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 
     <Button

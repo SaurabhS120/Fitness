@@ -18,6 +18,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var steps_tv:TextView
     private lateinit var calories_tv:TextView
     private lateinit var heartPoints_tv:TextView
+    private lateinit var walked_distance_tv:TextView
+    private lateinit var move_min_tv:TextView
     private val fitnessRepo: FitnessRepo =
         Repo.fitnessRepo(this)
 
@@ -29,6 +31,8 @@ class MainActivity : AppCompatActivity() {
         steps_tv = findViewById(R.id.steps_tv)
         calories_tv = findViewById(R.id.calories_tv)
         heartPoints_tv = findViewById(R.id.heart_points_tv)
+        walked_distance_tv = findViewById(R.id.walked_distance_tv)
+        move_min_tv = findViewById(R.id.move_min_tv)
         fitnessRepo.setOnStepsChange { steps->
             steps_tv.setText("Total steps: $steps")
         }
@@ -38,12 +42,20 @@ class MainActivity : AppCompatActivity() {
         fitnessRepo.setOnHeartPointsChange { heartPoints->
             heartPoints_tv.setText("Total heart points : $heartPoints")
         }
+        fitnessRepo.setOnDistanceWalked { walked_distance->
+            walked_distance_tv.setText("Total distance walked : $walked_distance meters")
+        }
+        fitnessRepo.setOnMoveMin { move_min->
+            move_min_tv.setText("Moved Mins : $move_min move min")
+        }
         fitnessRepo.requestGoogleFitPermissions()
 
         button.setOnClickListener {
             fitnessRepo.readStepsCount()
             fitnessRepo.readCaloriesCount()
             fitnessRepo.readHeartPointsCount()
+            fitnessRepo.readDistenceWalkedCount()
+            fitnessRepo.readMoveMin()
         }
     }
     @RequiresApi(Build.VERSION_CODES.O)
@@ -56,6 +68,8 @@ class MainActivity : AppCompatActivity() {
                     fitnessRepo.readStepsCount()
                     fitnessRepo.readCaloriesCount()
                     fitnessRepo.readHeartPointsCount()
+                    fitnessRepo.readDistenceWalkedCount()
+                    fitnessRepo.readMoveMin()
                 }
                 else -> {
                     // Result wasn't from Google Fit

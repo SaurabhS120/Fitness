@@ -13,4 +13,10 @@ interface FitnessRepo {
     fun setOnHeartPointsChange(setHeartPoints: (steps: Int) -> Unit)
     @RequiresApi(value = 26)
     fun readHeartPointsCount()
+    @RequiresApi(value = 26)
+    fun readDistenceWalkedCount()
+    fun setOnDistanceWalked(setHeartPoints: (steps: Int) -> Unit)
+    fun setOnMoveMin(setMoveMin: (setMoveMin: Int) -> Unit)
+    @RequiresApi(value = 26)
+    fun readMoveMin()
 }

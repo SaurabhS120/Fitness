@@ -5,12 +5,16 @@ import com.example.domain.FitnessRepo
 class FitnessDummyRepo : FitnessRepo {
     private var setSteps: ((steps: Int) -> Unit)? = null
     private var setCalories: ((calories: Int) -> Unit)? = null
-    private var setHeartPoints: ((calories: Int) -> Unit)? = null
+    private var setHeartPoints: ((heartPoints: Int) -> Unit)? = null
+    private var setDistanceWalked: ((distanceWalked: Int) -> Unit)? = null
+    private var setMoveMin: ((moveMin: Int) -> Unit)? = null
     private var stepsCount = 1
     override fun requestGoogleFitPermissions() {
         readStepsCount()
         readCaloriesCount()
         readHeartPointsCount()
+        readDistenceWalkedCount()
+        readMoveMin()
     }
 
     override fun readStepsCount() {
@@ -35,5 +39,21 @@ class FitnessDummyRepo : FitnessRepo {
 
     override fun readHeartPointsCount() {
         setHeartPoints?.invoke(stepsCount)
+    }
+
+    override fun readDistenceWalkedCount() {
+        setDistanceWalked?.invoke(stepsCount)
+    }
+
+    override fun setOnDistanceWalked(setDistanceWalked: (distanceWalked: Int) -> Unit) {
+        this.setDistanceWalked = setDistanceWalked
+    }
+
+    override fun setOnMoveMin(setMoveMin: (moveMin: Int) -> Unit) {
+        this.setMoveMin = setMoveMin
+    }
+
+    override fun readMoveMin() {
+        setMoveMin?.invoke(stepsCount)
     }
 }
