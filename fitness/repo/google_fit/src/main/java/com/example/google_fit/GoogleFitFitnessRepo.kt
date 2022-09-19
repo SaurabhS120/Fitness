@@ -26,7 +26,7 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
     private val TAG = "Google Fit Helper"
     private lateinit var fitnessOptions : FitnessOptions
     private var setSteps:((steps:Int)->Unit)? = null
-    private var setCalories:((steps:Int)->Unit)? = null
+    private var setCalories:((calores:Int)->Unit)? = null
     @RequiresApi(Build.VERSION_CODES.O)
     override fun requestGoogleFitPermissions() {
         if (ContextCompat.checkSelfPermission(activity,"android.permission.ACTIVITY_RECOGNITION")
