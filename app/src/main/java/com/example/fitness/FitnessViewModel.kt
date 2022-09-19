@@ -25,7 +25,6 @@ class FitnessViewModel:ViewModel() {
     private lateinit var fitnessRepo: FitnessRepo
     fun setActivity(activity: Activity){
         fitnessRepo = Repo.fitnessRepo(activity)
-        fitnessRepo.requestGoogleFitPermissions()
         fitnessRepo.setOnStepsChange { steps->
             _stepsLiveData.postValue("Total steps: $steps steps")
         }
@@ -41,6 +40,7 @@ class FitnessViewModel:ViewModel() {
         fitnessRepo.setOnMoveMin { move_min->
             _moveMinLiveData.postValue("Moved Mins : $move_min move min")
         }
+        fitnessRepo.requestGoogleFitPermissions()
     }
     @RequiresApi(Build.VERSION_CODES.O)
     fun updateData(){
