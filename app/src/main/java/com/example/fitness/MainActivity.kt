@@ -53,7 +53,9 @@ class MainActivity : AppCompatActivity() {
             Activity.RESULT_OK -> when (requestCode) {
                 1 -> {
                     Log.d(TAG,"Login success")
-
+                    fitnessRepo.readStepsCount()
+                    fitnessRepo.readCaloriesCount()
+                    fitnessRepo.readHeartPointsCount()
                 }
                 else -> {
                     // Result wasn't from Google Fit
