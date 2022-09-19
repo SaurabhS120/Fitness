@@ -34,13 +34,13 @@ class MainActivity : AppCompatActivity() {
         walked_distance_tv = findViewById(R.id.walked_distance_tv)
         move_min_tv = findViewById(R.id.move_min_tv)
         fitnessRepo.setOnStepsChange { steps->
-            steps_tv.setText("Total steps: $steps")
+            steps_tv.setText("Total steps: $steps steps")
         }
         fitnessRepo.setOnCaloriesChange { calories->
-            calories_tv.setText("Total calories : $calories")
+            calories_tv.setText("Total calories : $calories calories")
         }
         fitnessRepo.setOnHeartPointsChange { heartPoints->
-            heartPoints_tv.setText("Total heart points : $heartPoints")
+            heartPoints_tv.setText("Total heart points : $heartPoints heart pts")
         }
         fitnessRepo.setOnDistanceWalked { walked_distance->
             walked_distance_tv.setText("Total distance walked : $walked_distance meters")
