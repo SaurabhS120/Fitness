@@ -61,6 +61,7 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
             .addDataType(DataType.AGGREGATE_MOVE_MINUTES, FitnessOptions.ACCESS_READ)
             .build()
         val account = GoogleSignIn.getAccountForExtension(activity, fitnessOptions)
+        logSubscription()
         if (!GoogleSignIn.hasPermissions(account, fitnessOptions)) {
             GoogleSignIn.requestPermissions(
                 activity, // your activity
@@ -74,69 +75,30 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun readStepsCount() {
-        Fitness.getRecordingClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
-            .listSubscriptions()
-            .addOnSuccessListener { subscriptions ->
-                for (sc in subscriptions) {
-                    val dt = sc.dataType
-                    Log.i(TAG, "Active subscription for data type: ${dt?.name}")
-                }
-            }
         Fitness.getHistoryClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
             .readDailyTotal(DataType.TYPE_STEP_COUNT_DELTA)
             .addOnSuccessListener { result ->
                 val totalSteps =
                     result.dataPoints.firstOrNull()?.getValue(Field.FIELD_STEPS)?.asInt() ?: 0
+                Log.i(TAG,"Total steps : $totalSteps")
+                setSteps?.invoke(totalSteps)
+
                 // Do something with totalSteps
             }
             .addOnFailureListener { e ->
                 Log.e(TAG, "There was a problem getting steps.", e)
-            }
-        val startTime = LocalDate.now().atStartOfDay(ZoneId.systemDefault())
-        val endTime = LocalDateTime.now().atZone(ZoneId.systemDefault())
-
-        val datasource = DataSource.Builder()
-            .setAppPackageName("com.google.android.gms")
-            .setDataType(DataType.TYPE_STEP_COUNT_DELTA)
-            .setType(DataSource.TYPE_DERIVED)
-            .setStreamName("estimated_steps")
-            .build()
-
-        val request = DataReadRequest.Builder()
-            .aggregate(datasource)
-            .bucketByTime(1, TimeUnit.DAYS)
-            .setTimeRange(startTime.toEpochSecond(), endTime.toEpochSecond(), TimeUnit.SECONDS)
-            .build()
-
-        Fitness.getHistoryClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
-            .readData(request)
-            .addOnSuccessListener { response ->
-                val totalSteps = response.buckets
-                    .flatMap { it.dataSets }
-                    .flatMap { it.dataPoints }
-                    .sumBy { it.getValue(Field.FIELD_STEPS).asInt() }
-                Log.i(TAG, "Total steps: $totalSteps")
-                setSteps?.invoke(totalSteps)
             }
 
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun readCaloriesCount() {
-        Fitness.getRecordingClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
-            .listSubscriptions()
-            .addOnSuccessListener { subscriptions ->
-                for (sc in subscriptions) {
-                    val dt = sc.dataType
-                    Log.i(TAG, "Active subscription for data type: ${dt?.name}")
-                }
-            }
         Fitness.getHistoryClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
             .readDailyTotal(DataType.TYPE_CALORIES_EXPENDED)
             .addOnSuccessListener { result ->
                 val totalCalories =
                     result.dataPoints.firstOrNull()?.getValue(Field.FIELD_CALORIES)?.asFloat() ?: 0
-                Log.i("Total Calories",totalCalories.toString())
+                Log.i(TAG,"Total Calories $totalCalories")
                 setCalories?.invoke(totalCalories.toInt())
                 // Do something with totalSteps
             }
@@ -148,20 +110,12 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun readHeartPointsCount() {
-        Fitness.getRecordingClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
-            .listSubscriptions()
-            .addOnSuccessListener { subscriptions ->
-                for (sc in subscriptions) {
-                    val dt = sc.dataType
-                    Log.i(TAG, "Active subscription for data type: ${dt?.name}")
-                }
-            }
         Fitness.getHistoryClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
             .readDailyTotal(DataType.TYPE_HEART_POINTS)
             .addOnSuccessListener { result ->
                 val totalHeartPoints =
                     result.dataPoints.firstOrNull()?.getValue(Field.FIELD_INTENSITY)?.asFloat() ?: 0
-                Log.i("Total Calories",totalHeartPoints.toString())
+                Log.i(TAG,"Total Heart Points : $totalHeartPoints")
                 setHeartPoints?.invoke(totalHeartPoints.toInt())
                 // Do something with totalSteps
             }
@@ -173,20 +127,12 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun readDistenceWalkedCount() {
-        Fitness.getRecordingClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
-            .listSubscriptions()
-            .addOnSuccessListener { subscriptions ->
-                for (sc in subscriptions) {
-                    val dt = sc.dataType
-                    Log.i(TAG, "Active subscription for data type: ${dt?.name}")
-                }
-            }
         Fitness.getHistoryClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
             .readDailyTotal(DataType.TYPE_DISTANCE_DELTA)
             .addOnSuccessListener { result ->
                 val totalDistanceWalked =
                     result.dataPoints.firstOrNull()?.getValue(Field.FIELD_DISTANCE )?.asFloat() ?: 0
-                Log.i("Total distance walked",totalDistanceWalked.toString())
+                Log.i(TAG,"Total distance walked $totalDistanceWalked")
                 setDistanceWalked?.invoke(totalDistanceWalked.toInt())
             }
             .addOnFailureListener { e ->
@@ -197,20 +143,12 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun readMoveMin() {
-        Fitness.getRecordingClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
-            .listSubscriptions()
-            .addOnSuccessListener { subscriptions ->
-                for (sc in subscriptions) {
-                    val dt = sc.dataType
-                    Log.i(TAG, "Active subscription for data type: ${dt?.name}")
-                }
-            }
         Fitness.getHistoryClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
             .readDailyTotal(DataType.TYPE_MOVE_MINUTES)
             .addOnSuccessListener { result ->
                 val totalMoveMin =
                     result.dataPoints.firstOrNull()?.getValue(Field.FIELD_DURATION )?.asInt() ?: 0
-                Log.i("Total moved min",totalMoveMin.toString())
+                Log.i(TAG,"Total moved min $totalMoveMin")
                 setMoveMin?.invoke(totalMoveMin)
             }
             .addOnFailureListener { e ->
@@ -253,7 +191,16 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
         readDistenceWalkedCount()
         readMoveMin()
     }
-
+    fun logSubscription(){
+        Fitness.getRecordingClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
+            .listSubscriptions()
+            .addOnSuccessListener { subscriptions ->
+                for (sc in subscriptions) {
+                    val dt = sc.dataType
+                    Log.i(TAG, "Active subscription for data type: ${dt?.name}")
+                }
+            }
+    }
     private fun subscribeFitness(){
         Fitness.getRecordingClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
             // This example shows subscribing to a DataType, across all possible data
