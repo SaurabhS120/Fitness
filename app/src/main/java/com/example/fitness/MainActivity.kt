@@ -3,16 +3,13 @@ package com.example.fitness
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.widget.Button
-import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import com.example.fitness.databinding.ActivityFitnessBinding
-import com.example.fitness.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private val TAG = "Fitness"
@@ -30,6 +27,11 @@ class MainActivity : AppCompatActivity() {
 
         binding.button.setOnClickListener {
             viewModel.updateData()
+        }
+
+        val lineChartController = LineChartController(binding.chart)
+        viewModel.heartBtHistory.observe(this) { heartBtHistory ->
+            lineChartController.drawLineChart(heartBtHistory)
         }
     }
     @RequiresApi(Build.VERSION_CODES.O)
