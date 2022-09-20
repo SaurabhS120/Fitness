@@ -57,9 +57,32 @@
 
         </LinearLayout>
 
+
+        <TextView
+            android:id="@+id/calories_tv"
+            tools:text="calories"
+            android:text="@{viewModel.caloriesLiveData}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/workout_img_card"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:textSize="48sp"
+            android:textStyle="bold"
+            android:textColor="@color/dark_text"/>
+
+        <TextView
+            android:id="@+id/calories_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/calories_tv"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:text="@string/total_kilocalories"/>
+
         <LinearLayout
             android:orientation="vertical"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/calories_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@id/button"
@@ -69,12 +92,6 @@
                 android:id="@+id/steps_tv"
                 tools:text="steps"
                 android:text="@{viewModel.stepsLiveData}"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:id="@+id/calories_tv"
-                tools:text="calories"
-                android:text="@{viewModel.caloriesLiveData}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
             <TextView

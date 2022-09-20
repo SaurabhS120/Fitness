@@ -29,7 +29,7 @@ class FitnessViewModel:ViewModel() {
             _stepsLiveData.postValue("Total steps: $steps steps")
         }
         fitnessRepo.setOnCaloriesChange { calories->
-            _caloriesLiveData.postValue("Total calories : $calories calories")
+            _caloriesLiveData.postValue("$calories Kcal")
         }
         fitnessRepo.setOnHeartPointsChange { heartPoints->
             _heartPointsLiveData.postValue("Total heart points : $heartPoints heart pts")
