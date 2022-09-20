@@ -26,19 +26,19 @@ class FitnessViewModel:ViewModel() {
     fun setActivity(activity: Activity){
         fitnessRepo = Repo.fitnessRepo(activity)
         fitnessRepo.setOnStepsChange { steps->
-            _stepsLiveData.postValue("Total steps: $steps steps")
+            _stepsLiveData.postValue("$steps")
         }
         fitnessRepo.setOnCaloriesChange { calories->
             _caloriesLiveData.postValue("$calories Kcal")
         }
         fitnessRepo.setOnHeartPointsChange { heartPoints->
-            _heartPointsLiveData.postValue("Total heart points : $heartPoints heart pts")
+            _heartPointsLiveData.postValue("$heartPoints heart pts")
         }
         fitnessRepo.setOnDistanceWalked { walked_distance->
-            _walkedDistanceLiveData.postValue("Total distance walked : $walked_distance meters")
+            _walkedDistanceLiveData.postValue("$walked_distance m")
         }
         fitnessRepo.setOnMoveMin { move_min->
-            _moveMinLiveData.postValue("Moved Mins : $move_min move min")
+            _moveMinLiveData.postValue("$move_min")
         }
         fitnessRepo.requestGoogleFitPermissions()
     }

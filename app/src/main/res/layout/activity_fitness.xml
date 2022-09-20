@@ -80,58 +80,120 @@
             app:layout_constraintRight_toRightOf="parent"
             android:text="@string/total_kilocalories"/>
 
-        <LinearLayout
-            android:orientation="vertical"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/details_card"
+            app:layout_constraintTop_toBottomOf="@id/calories_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="#C7ECF1"
+            app:cardCornerRadius="26sp"
+            android:layout_margin="24sp">
+
+        <TableLayout
             app:layout_constraintTop_toBottomOf="@id/calories_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/steps_tv"
-                tools:text="steps"
-                android:text="@{viewModel.stepsLiveData}"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:id="@+id/heart_points_tv"
-                tools:text="heart points"
-                android:text="@{viewModel.heartPointsLiveData}"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:id="@+id/walked_distance_tv"
-                tools:text="Walked distance"
-                android:text="@{viewModel.walkedDistanceLiveData}"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:id="@+id/move_min_tv"
-                tools:text="Moved Min"
-                android:text="@{viewModel.moveMinLiveData}"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="12sp">
+            <TableRow>
+                <TextView
+                    android:id="@+id/steps_tv"
+                    tools:text="steps"
+                    android:text="@{viewModel.stepsLiveData}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8sp"
+                    android:textAlignment="center"
+                    android:textColor="@color/dark_text"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:layout_weight="1"/>
+                <TextView
+                    android:id="@+id/heart_points_tv"
+                    tools:text="heart points"
+                    android:text="@{viewModel.heartPointsLiveData}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8sp"
+                    android:textAlignment="center"
+                    android:textColor="@color/dark_text"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:layout_weight="1"/>
+                <TextView
+                    android:id="@+id/walked_distance_tv"
+                    tools:text="Walked distance"
+                    android:text="@{viewModel.walkedDistanceLiveData}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8sp"
+                    android:textAlignment="center"
+                    android:textColor="@color/dark_text"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:layout_weight="1"/>
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:text="@string/steps"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8sp"
+                    android:textAlignment="center"
+                    android:layout_weight="1"/>
+                <TextView
+                    android:text="@string/points"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8sp"
+                    android:textAlignment="center"
+                    android:layout_weight="1"/>
+                <TextView
+                    android:text="@string/distance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8sp"
+                    android:textAlignment="center"
+                    android:layout_weight="1"/>
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:id="@+id/move_min_tv"
+                    tools:text="Moved Min"
+                    android:text="@{viewModel.moveMinLiveData}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8sp"
+                    android:textAlignment="center"
+                    android:textColor="@color/dark_text"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:layout_weight="1"/>
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:text="@string/move_min"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8sp"
+                    android:textAlignment="center"
+                    android:layout_weight="1"/>
+            </TableRow>
+        </TableLayout>
+        </androidx.cardview.widget.CardView>
 
         <Button
             android:id="@+id/button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/subscribe"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:text="@string/update_data"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="@string/new_final_activity"
-            app:layout_constraintTop_toBottomOf="@id/button"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

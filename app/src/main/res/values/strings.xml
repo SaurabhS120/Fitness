@@ -3,7 +3,11 @@
     <string name="workout_img">Workout img</string>
     <string name="your_activities">Your Activities</string>
     <string name="dummy_date">Today 8 Jul</string>
-    <string name="subscribe">Subscribe</string>
     <string name="new_final_activity">New final activity</string>
     <string name="total_kilocalories">Total Kilocalories</string>
+    <string name="steps">Steps</string>
+    <string name="points">Points</string>
+    <string name="distance">Distance</string>
+    <string name="move_min">Move Min</string>
+    <string name="update_data">Update data</string>
 </resources>
