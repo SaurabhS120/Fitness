@@ -17,7 +17,7 @@ class FitnessViewModel:ViewModel() {
     private val _heartPointsLiveData = MutableLiveData<String>()
     private val _walkedDistanceLiveData = MutableLiveData<String>()
     private val _moveMinLiveData = MutableLiveData<String>()
-    val _heartBtHistory = MutableLiveData<List<Int>>(listOf(43, 52, 23, 53, 37, 42, 41))
+    val _heartBtHistory = MutableLiveData<List<Int>>()
     val stepsLiveData = _stepsLiveData as LiveData<String>
     val caloriesLiveData = _caloriesLiveData as LiveData<String>
     val heartPointsLiveData = _heartPointsLiveData as LiveData<String>
@@ -33,14 +33,17 @@ class FitnessViewModel:ViewModel() {
         fitnessRepo.setOnCaloriesChange { calories->
             _caloriesLiveData.postValue("$calories Kcal")
         }
-        fitnessRepo.setOnHeartPointsChange { heartPoints->
+        fitnessRepo.setOnHeartPointsChange { heartPoints ->
             _heartPointsLiveData.postValue("$heartPoints heart pts")
         }
-        fitnessRepo.setOnDistanceWalked { walked_distance->
+        fitnessRepo.setOnDistanceWalked { walked_distance ->
             _walkedDistanceLiveData.postValue("$walked_distance m")
         }
-        fitnessRepo.setOnMoveMin { move_min->
+        fitnessRepo.setOnMoveMin { move_min ->
             _moveMinLiveData.postValue("$move_min")
+        }
+        fitnessRepo.setOnHeartBtHistory { heartBtHistory ->
+            _heartBtHistory.postValue(heartBtHistory)
         }
         fitnessRepo.requestGoogleFitPermissions()
     }
@@ -52,6 +55,7 @@ class FitnessViewModel:ViewModel() {
             fitnessRepo.readHeartPointsCount()
             fitnessRepo.readDistenceWalkedCount()
             fitnessRepo.readMoveMin()
+            fitnessRepo.readHeartBtHistory()
         }
     }
 }
