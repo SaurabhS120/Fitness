@@ -10,4 +10,6 @@
     <string name="distance">Distance</string>
     <string name="move_min">Move Min</string>
     <string name="update_data">Update data</string>
+    <string name="intro_text">Track you fitness with our app\n start workout now</string>
+    <string name="ok">ok</string>
 </resources>

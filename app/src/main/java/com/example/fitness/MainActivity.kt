@@ -17,6 +17,7 @@ class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        startActivity(Intent(this, IntroActivity::class.java))
         val binding = ActivityFitnessBinding.inflate(LayoutInflater.from(this),null,false)
         setContentView(binding.root)
         binding.lifecycleOwner = this
