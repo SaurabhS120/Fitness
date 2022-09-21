@@ -12,11 +12,12 @@ import com.example.domain.FitnessRepo
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
-import com.google.android.gms.fitness.data.DataSource
+import com.google.android.gms.fitness.data.DataPoint
+import com.google.android.gms.fitness.data.DataSet
 import com.google.android.gms.fitness.data.DataType
 import com.google.android.gms.fitness.data.Field
 import com.google.android.gms.fitness.request.DataReadRequest
-import java.time.LocalDate
+import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.concurrent.TimeUnit
@@ -24,21 +25,30 @@ import java.util.concurrent.TimeUnit
 class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
 
     private val TAG = "Google Fit Helper"
-    private lateinit var fitnessOptions : FitnessOptions
-    private var setSteps:((steps:Int)->Unit)? = null
-    private var setCalories:((calores:Int)->Unit)? = null
-    private var setHeartPoints:((heartPoints:Int)->Unit)? = null
-    private var setDistanceWalked:((distance:Int)->Unit)? = null
-    private var setMoveMin:((moveMin:Int)->Unit)? = null
+    private lateinit var fitnessOptions: FitnessOptions
+    private var setSteps: ((steps: Int) -> Unit)? = null
+    private var setCalories: ((calores: Int) -> Unit)? = null
+    private var setHeartPoints: ((heartPoints: Int) -> Unit)? = null
+    private var setDistanceWalked: ((distance: Int) -> Unit)? = null
+    private var setMoveMin: ((moveMin: Int) -> Unit)? = null
+    private var setHeartBtHistory: ((setHeartBtHistory: List<Int>) -> Unit)? = null
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun requestGoogleFitPermissions() {
-        if (ContextCompat.checkSelfPermission(activity,"android.permission.ACTIVITY_RECOGNITION")
-            != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(activity, "android.permission.ACTIVITY_RECOGNITION")
+            != PackageManager.PERMISSION_GRANTED
+        ) {
             // Permission is not granted
-            Toast.makeText(activity,"Activity recognition Permission is not granted", Toast.LENGTH_LONG).show()
-            ActivityCompat.requestPermissions(activity,
+            Toast.makeText(
+                activity,
+                "Activity recognition Permission is not granted",
+                Toast.LENGTH_LONG
+            ).show()
+            ActivityCompat.requestPermissions(
+                activity,
                 arrayOf("android.permission.ACTIVITY_RECOGNITION"),
-                0)
+                0
+            )
         }
         if (ContextCompat.checkSelfPermission(activity,"android.permission.ACCESS_FINE_LOCATION")
             != PackageManager.PERMISSION_GRANTED) {
@@ -147,14 +157,67 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
             .readDailyTotal(DataType.TYPE_MOVE_MINUTES)
             .addOnSuccessListener { result ->
                 val totalMoveMin =
-                    result.dataPoints.firstOrNull()?.getValue(Field.FIELD_DURATION )?.asInt() ?: 0
-                Log.i(TAG,"Total moved min $totalMoveMin")
+                    result.dataPoints.firstOrNull()?.getValue(Field.FIELD_DURATION)?.asInt() ?: 0
+                Log.i(TAG, "Total moved min $totalMoveMin")
                 setMoveMin?.invoke(totalMoveMin)
             }
             .addOnFailureListener { e ->
                 Log.e(TAG, "There was a problem getting steps.", e)
             }
 
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun readHeartBtHistory() {
+        val endTime = LocalDateTime.now().atZone(ZoneId.systemDefault())
+        val startTime = endTime.minusWeeks(1)
+        Log.i(TAG, "Range Start: $startTime")
+        Log.i(TAG, "Range End: $endTime")
+
+        val readRequest =
+            DataReadRequest.Builder()
+                // The data request can specify multiple data types to return,
+                // effectively combining multiple data queries into one call.
+                // This example demonstrates aggregating only one data type.
+                .aggregate(DataType.TYPE_STEP_COUNT_DELTA)
+                // Analogous to a "Group By" in SQL, defines how data should be
+                // aggregated.
+                // bucketByTime allows for a time span, whereas bucketBySession allows
+                // bucketing by <a href="/fit/android/using-sessions">sessions</a>.
+                .bucketByTime(1, TimeUnit.DAYS)
+                .setTimeRange(startTime.toEpochSecond(), endTime.toEpochSecond(), TimeUnit.SECONDS)
+                .build()
+        Fitness.getHistoryClient(
+            activity,
+            GoogleSignIn.getAccountForExtension(activity, fitnessOptions)
+        )
+            .readData(readRequest)
+            .addOnSuccessListener { response ->
+                // The aggregate query puts datasets into buckets, so flatten into a
+                // single list of datasets
+                for (dataSet in response.buckets.flatMap { it.dataSets }) {
+                    dumpDataSet(dataSet)
+                }
+                val newData = response.buckets.flatMap { it.dataSets }.flatMap {
+                    it.dataPoints.flatMap { dp ->
+                        it.dataType.fields.map { field ->
+                            Log.i(
+                                TAG,
+                                "\tField: ${field.name.toString()} Value: ${dp.getValue(field)}"
+                            )
+                            dp.getValue(field).asInt()
+                        }
+                    }
+                }
+                setHeartBtHistory?.invoke(newData)
+            }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "There was an error reading data from Google Fit", e)
+            }
+    }
+
+    override fun setOnHeartBtHistory(setHeartBtHistory: (setHeartBtHistory: List<Int>) -> Unit) {
+        this.setHeartBtHistory = setHeartBtHistory
     }
 
     override fun setOnStepsChange(setSteps: (steps: Int) -> Unit) {
@@ -190,6 +253,7 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
         readHeartPointsCount()
         readDistenceWalkedCount()
         readMoveMin()
+        readHeartBtHistory()
     }
     fun logSubscription(){
         Fitness.getRecordingClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
@@ -265,4 +329,28 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
                 Log.e(TAG, "There was a problem subscribing.", e)
             }
     }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun dumpDataSet(dataSet: DataSet) {
+        Log.i(TAG, "Data returned for Data type: ${dataSet.dataType.name}")
+        for (dp in dataSet.dataPoints) {
+            Log.i(TAG, "Data point:")
+            Log.i(TAG, "\tType: ${dp.dataType.name}")
+            Log.i(TAG, "\tStart: ${dp.getStartTimeString()}")
+            Log.i(TAG, "\tEnd: ${dp.getEndTimeString()}")
+            for (field in dp.dataType.fields) {
+                Log.i(TAG, "\tField: ${field.name.toString()} Value: ${dp.getValue(field)}")
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun DataPoint.getStartTimeString() = Instant.ofEpochSecond(this.getStartTime(TimeUnit.SECONDS))
+        .atZone(ZoneId.systemDefault())
+        .toLocalDateTime().toString()
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun DataPoint.getEndTimeString() = Instant.ofEpochSecond(this.getEndTime(TimeUnit.SECONDS))
+        .atZone(ZoneId.systemDefault())
+        .toLocalDateTime().toString()
 }
