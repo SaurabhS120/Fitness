@@ -12,8 +12,15 @@ import com.example.domain.FitnessDataType
 import com.example.domain.FitnessRepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 
 class FitnessViewModel(application: Application) : AndroidViewModel(application) {
+    val df = SimpleDateFormat(
+        "E, dd MMM yyyy",
+        Locale.getDefault()
+    ) // pass the format pattern that you like and done.
+    val date = df.format(Date())
     private val _stepsLiveData = MutableLiveData<String>()
     private val _caloriesLiveData = MutableLiveData<String>()
     private val _heartPointsLiveData = MutableLiveData<String>()
