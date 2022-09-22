@@ -38,7 +38,6 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
         if (ContextCompat.checkSelfPermission(activity, "android.permission.ACTIVITY_RECOGNITION")
             != PackageManager.PERMISSION_GRANTED
         ) {
-            // Permission is not granted
             Toast.makeText(
                 activity,
                 "Activity recognition Permission is not granted",
@@ -52,7 +51,6 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
         }
         if (ContextCompat.checkSelfPermission(activity,"android.permission.ACCESS_FINE_LOCATION")
             != PackageManager.PERMISSION_GRANTED) {
-            // Permission is not granted
             Toast.makeText(activity,"Location Permission is not granted", Toast.LENGTH_LONG).show()
             ActivityCompat.requestPermissions(activity,
                 arrayOf("android.permission.ACCESS_FINE_LOCATION"),
@@ -74,10 +72,11 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
         logSubscription()
         if (!GoogleSignIn.hasPermissions(account, fitnessOptions)) {
             GoogleSignIn.requestPermissions(
-                activity, // your activity
-                1, // e.g. 1
+                activity,
+                1,
                 account,
-                fitnessOptions)
+                fitnessOptions
+            )
         } else {
             accessGoogleFit()
         }
@@ -122,14 +121,7 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
 
         val readRequest =
             DataReadRequest.Builder()
-                // The data request can specify multiple data types to return,
-                // effectively combining multiple data queries into one call.
-                // This example demonstrates aggregating only one data type.
                 .aggregate(DataType.TYPE_STEP_COUNT_DELTA)
-                // Analogous to a "Group By" in SQL, defines how data should be
-                // aggregated.
-                // bucketByTime allows for a time span, whereas bucketBySession allows
-                // bucketing by <a href="/fit/android/using-sessions">sessions</a>.
                 .bucketByTime(1, TimeUnit.DAYS)
                 .setTimeRange(startTime.toEpochSecond(), endTime.toEpochSecond(), TimeUnit.SECONDS)
                 .build()
@@ -139,8 +131,6 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
         )
             .readData(readRequest)
             .addOnSuccessListener { response ->
-                // The aggregate query puts datasets into buckets, so flatten into a
-                // single list of datasets
                 for (dataSet in response.buckets.flatMap { it.dataSets }) {
                     dumpDataSet(dataSet)
                 }
@@ -211,8 +201,6 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
     }
     private fun subscribeFitness(){
         Fitness.getRecordingClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
-            // This example shows subscribing to a DataType, across all possible data
-            // sources. Alternatively, a specific DataSource can be used.
             .subscribe(DataType.TYPE_STEP_COUNT_DELTA)
             .addOnSuccessListener {
                 Log.i(TAG, "Successfully subscribed!")
@@ -224,8 +212,6 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
 
     private fun subscribeCalories(){
         Fitness.getRecordingClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
-            // This example shows subscribing to a DataType, across all possible data
-            // sources. Alternatively, a specific DataSource can be used.
             .subscribe(DataType.TYPE_CALORIES_EXPENDED)
             .addOnSuccessListener {
                 Log.i(TAG, "Successfully subscribed!")
@@ -237,8 +223,6 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
 
     private fun subscribeHeartPoints(){
         Fitness.getRecordingClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
-            // This example shows subscribing to a DataType, across all possible data
-            // sources. Alternatively, a specific DataSource can be used.
             .subscribe(DataType.TYPE_HEART_POINTS)
             .addOnSuccessListener {
                 Log.i(TAG, "Successfully subscribed!")
@@ -250,8 +234,6 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
 
     private fun subscribeDistanceWalked(){
         Fitness.getRecordingClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
-            // This example shows subscribing to a DataType, across all possible data
-            // sources. Alternatively, a specific DataSource can be used.
             .subscribe(DataType.TYPE_DISTANCE_DELTA)
             .addOnSuccessListener {
                 Log.i(TAG, "Successfully subscribed!")
@@ -263,8 +245,6 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
 
     private fun subscribeMoveMin(){
         Fitness.getRecordingClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
-            // This example shows subscribing to a DataType, across all possible data
-            // sources. Alternatively, a specific DataSource can be used.
             .subscribe(DataType.TYPE_MOVE_MINUTES)
             .addOnSuccessListener {
                 Log.i(TAG, "Successfully subscribed!")

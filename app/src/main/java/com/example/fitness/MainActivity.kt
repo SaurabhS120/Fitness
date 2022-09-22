@@ -44,12 +44,10 @@ class MainActivity : AppCompatActivity() {
                     viewModel.updateData()
                 }
                 else -> {
-                    // Result wasn't from Google Fit
                     Log.d(TAG, "Result wasn't from Google Fit")
                 }
             }
             else -> {
-                // Permission not granted
                 Log.d(TAG, "Permission not granted")
             }
         }
