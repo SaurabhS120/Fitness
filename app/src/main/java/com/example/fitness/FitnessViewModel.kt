@@ -1,17 +1,18 @@
 package com.example.fitness
 
 import android.app.Activity
+import android.app.Application
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.FitnessRepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class FitnessViewModel:ViewModel() {
+class FitnessViewModel(application: Application) : AndroidViewModel(application) {
     private val _stepsLiveData = MutableLiveData<String>()
     private val _caloriesLiveData = MutableLiveData<String>()
     private val _heartPointsLiveData = MutableLiveData<String>()
@@ -25,6 +26,7 @@ class FitnessViewModel:ViewModel() {
     val moveMinLiveData = _moveMinLiveData as LiveData<String>
     val heartBtHistory = _heartBtHistory as LiveData<List<Int>>
     private lateinit var fitnessRepo: FitnessRepo
+    private val localRepo = Repo.localRepo(application.applicationContext)
     fun setActivity(activity: Activity){
         fitnessRepo = Repo.fitnessRepo(activity)
         fitnessRepo.setOnStepsChange { steps->
@@ -47,9 +49,10 @@ class FitnessViewModel:ViewModel() {
         }
         fitnessRepo.requestGoogleFitPermissions()
     }
+
     @RequiresApi(Build.VERSION_CODES.O)
-    fun updateData(){
-        viewModelScope.launch(Dispatchers.IO){
+    fun updateData() {
+        viewModelScope.launch(Dispatchers.IO) {
             fitnessRepo.readStepsCount()
             fitnessRepo.readCaloriesCount()
             fitnessRepo.readHeartPointsCount()
@@ -57,5 +60,9 @@ class FitnessViewModel:ViewModel() {
             fitnessRepo.readMoveMin()
             fitnessRepo.readHeartBtHistory()
         }
+    }
+
+    fun isFirstLaunch(): Boolean {
+        return localRepo.isFirstLaunch()
     }
 }

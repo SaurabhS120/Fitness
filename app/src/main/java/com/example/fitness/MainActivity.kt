@@ -17,15 +17,16 @@ class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        startActivity(Intent(this, IntroActivity::class.java))
-        val binding = ActivityFitnessBinding.inflate(LayoutInflater.from(this),null,false)
+        val binding = ActivityFitnessBinding.inflate(LayoutInflater.from(this), null, false)
         setContentView(binding.root)
         binding.lifecycleOwner = this
         val viewModel: FitnessViewModel by viewModels()
         this.viewModel = viewModel
         binding.viewModel = viewModel
         viewModel.setActivity(this)
-
+        if (viewModel.isFirstLaunch()) {
+            startActivity(Intent(this, IntroActivity::class.java))
+        }
         binding.button.setOnClickListener {
             viewModel.updateData()
         }
