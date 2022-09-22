@@ -7,7 +7,7 @@ interface FitnessRepo {
     fun setOnHeartPointsChange(setHeartPoints: (steps: Int) -> Unit)
     fun setOnDistanceWalked(setHeartPoints: (steps: Int) -> Unit)
     fun setOnMoveMin(setMoveMin: (setMoveMin: Int) -> Unit)
-    fun setOnHeartBtHistory(setHeartBtHistory: (setHeartBtHistory: List<Int>) -> Unit)
+    fun setOnStepsHistory(setStepsHistory: (setHeartBtHistory: List<Int>) -> Unit)
     fun readData(fitnessDataType: FitnessDataType)
-    fun readHeartBtHistory()
+    fun readStepsHistory()
 }

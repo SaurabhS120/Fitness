@@ -31,7 +31,7 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
     private var setHeartPoints: ((heartPoints: Int) -> Unit)? = null
     private var setDistanceWalked: ((distance: Int) -> Unit)? = null
     private var setMoveMin: ((moveMin: Int) -> Unit)? = null
-    private var setHeartBtHistory: ((setHeartBtHistory: List<Int>) -> Unit)? = null
+    private var setStepsHistory: ((setHeartBtHistory: List<Int>) -> Unit)? = null
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun requestGoogleFitPermissions() {
@@ -114,7 +114,7 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun readHeartBtHistory() {
+    override fun readStepsHistory() {
         val endTime = LocalDateTime.now().atZone(ZoneId.systemDefault())
         val startTime = endTime.minusWeeks(1)
         Log.i(TAG, "Range Start: $startTime")
@@ -155,15 +155,15 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
                         }
                     }
                 }
-                setHeartBtHistory?.invoke(newData)
+                setStepsHistory?.invoke(newData)
             }
             .addOnFailureListener { e ->
                 Log.w(TAG, "There was an error reading data from Google Fit", e)
             }
     }
 
-    override fun setOnHeartBtHistory(setHeartBtHistory: (setHeartBtHistory: List<Int>) -> Unit) {
-        this.setHeartBtHistory = setHeartBtHistory
+    override fun setOnStepsHistory(setStepsHistory: (setHeartBtHistory: List<Int>) -> Unit) {
+        this.setStepsHistory = setStepsHistory
     }
 
     override fun setOnStepsChange(setSteps: (steps: Int) -> Unit) {
@@ -197,7 +197,7 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
         FitnessDataType.values().forEach {
             readData(it)
         }
-        readHeartBtHistory()
+        readStepsHistory()
     }
     fun logSubscription(){
         Fitness.getRecordingClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))

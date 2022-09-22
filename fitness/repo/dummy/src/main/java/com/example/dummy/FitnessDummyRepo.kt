@@ -9,7 +9,7 @@ class FitnessDummyRepo : FitnessRepo {
     private var setHeartPoints: ((heartPoints: Int) -> Unit)? = null
     private var setDistanceWalked: ((distanceWalked: Int) -> Unit)? = null
     private var setMoveMin: ((moveMin: Int) -> Unit)? = null
-    private var setHeartBtHistory: ((setHeartBtHistory: List<Int>) -> Unit)? = null
+    private var setStepsHistory: ((setHeartBtHistory: List<Int>) -> Unit)? = null
     private var stepsCount = 1
 
     override fun requestGoogleFitPermissions() {
@@ -38,13 +38,13 @@ class FitnessDummyRepo : FitnessRepo {
         this.setMoveMin = setMoveMin
     }
 
-    override fun readHeartBtHistory() {
+    override fun readStepsHistory() {
         val dummy_data = listOf(43, 52, 23, 53, 37, 42, 41)
-        setHeartBtHistory?.invoke(dummy_data)
+        setStepsHistory?.invoke(dummy_data)
     }
 
-    override fun setOnHeartBtHistory(setHeartBtHistory: (setHeartBtHistory: List<Int>) -> Unit) {
-        this.setHeartBtHistory = setHeartBtHistory
+    override fun setOnStepsHistory(setStepsHistory: (setHeartBtHistory: List<Int>) -> Unit) {
+        this.setStepsHistory = setStepsHistory
     }
 
     override fun readData(fitnessDataType: FitnessDataType) {
@@ -56,6 +56,6 @@ class FitnessDummyRepo : FitnessRepo {
             FitnessDataType.DISTANCE_COVERED -> setDistanceWalked?.invoke(stepsCount)
             FitnessDataType.MOVE_MIN -> setMoveMin?.invoke(stepsCount)
         }
-        readHeartBtHistory()
+        readStepsHistory()
     }
 }

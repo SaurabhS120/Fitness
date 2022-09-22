@@ -45,7 +45,7 @@ class FitnessViewModel(application: Application) : AndroidViewModel(application)
         fitnessRepo.setOnMoveMin { move_min ->
             _moveMinLiveData.postValue("$move_min")
         }
-        fitnessRepo.setOnHeartBtHistory { heartBtHistory ->
+        fitnessRepo.setOnStepsHistory { heartBtHistory ->
             _heartBtHistory.postValue(heartBtHistory)
         }
         fitnessRepo.requestGoogleFitPermissions()
@@ -57,7 +57,7 @@ class FitnessViewModel(application: Application) : AndroidViewModel(application)
             FitnessDataType.values().forEach {
                 fitnessRepo.readData(it)
             }
-            fitnessRepo.readHeartBtHistory()
+            fitnessRepo.readStepsHistory()
         }
     }
 
