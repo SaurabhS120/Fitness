@@ -15,13 +15,13 @@ class LineChartController(val lineChart: LineChart) {
         lineDataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER)
         lineDataSet.setDrawFilled(true)
         lineDataSet.fillColor =
-            ResourcesCompat.getColor(lineChart.resources, R.color.graph_line_color, null)
+            ResourcesCompat.getColor(lineChart.resources, R.color.detail_card_background, null)
         lineDataSet.color =
-            ResourcesCompat.getColor(lineChart.resources, R.color.graph_line_color, null)
+            ResourcesCompat.getColor(lineChart.resources, R.color.detail_card_background, null)
         lineDataSet.setCircleColor(
             ResourcesCompat.getColor(
                 lineChart.resources,
-                R.color.graph_line_color,
+                R.color.detail_card_background,
                 null
             )
         )
