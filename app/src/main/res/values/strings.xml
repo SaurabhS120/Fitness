@@ -12,4 +12,20 @@
     <string name="update_data">Update data</string>
     <string name="intro_text">Track you fitness with our app\n start workout now</string>
     <string name="ok">ok</string>
+    <string name="hello_user">Hello user</string>
+    <string name="my_plan">My Plan</string>
+    <string name="july_2021">July,2021</string>
+    <string name="recent_plan">Recent plan</string>
+    <string name="see_all">See All</string>
+    <string name="_02_48">02:48</string>
+    <string name="day1">Day 1</string>
+    <string name="time">Time</string>
+    <string name="favorite">Favorite</string>
+    <string name="play">Play</string>
+    <string name="day2">Day2</string>
+    <string name="day3">Day3</string>
+    <string name="body_weight">Body Weight</string>
+    <string name="workouts_1_of_5">Workouts 1 of 5</string>
+    <string name="week_1">Week 1</string>
+    <string name="plans">Plans</string>
 </resources>

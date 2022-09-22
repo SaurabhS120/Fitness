@@ -34,6 +34,9 @@ class MainActivity : AppCompatActivity() {
         viewModel.heartBtHistory.observe(this) { heartBtHistory ->
             lineChartController.drawLineChart(heartBtHistory)
         }
+        binding.buttonPlan.setOnClickListener {
+            startActivity(Intent(this, PlanActivity::class.java))
+        }
     }
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
