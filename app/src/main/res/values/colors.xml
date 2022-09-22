@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="dark_text">@color/black</color>
     <color name="detail_card_background">#87D9E4</color>
+    <color name="graph_line_color">#A0FF86</color>
 </resources>

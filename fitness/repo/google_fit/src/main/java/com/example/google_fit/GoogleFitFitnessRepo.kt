@@ -114,7 +114,10 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun readStepsHistory() {
-        val endTime = LocalDateTime.now().atZone(ZoneId.systemDefault())
+        val current_time = LocalDateTime.now().atZone(ZoneId.systemDefault())
+        val endTime =
+            LocalDateTime.of(current_time.year, current_time.month, current_time.dayOfMonth, 0, 0)
+                .atZone(ZoneId.systemDefault()).plusDays(1)
         val startTime = endTime.minusWeeks(1)
         Log.i(TAG, "Range Start: $startTime")
         Log.i(TAG, "Range End: $endTime")
