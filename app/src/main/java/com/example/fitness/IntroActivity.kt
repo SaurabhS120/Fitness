@@ -10,9 +10,11 @@ class IntroActivity : AppCompatActivity() {
         supportActionBar?.hide()
         val binding = ActivityIntroBinding.inflate(layoutInflater, null, false)
         setContentView(binding.root)
-        binding.nextButton.setOnClickListener {
-            finish()
-        }
+        binding.activity = this
 
+    }
+
+    fun onOk() {
+        finish()
     }
 }

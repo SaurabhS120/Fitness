@@ -23,20 +23,15 @@ class MainActivity : AppCompatActivity() {
         val viewModel: FitnessViewModel by viewModels()
         this.viewModel = viewModel
         binding.viewModel = viewModel
+        binding.activity = this
         viewModel.setActivity(this)
         if (viewModel.isFirstLaunch()) {
             startActivity(Intent(this, IntroActivity::class.java))
-        }
-        binding.button.setOnClickListener {
-            viewModel.updateData()
         }
 
         val lineChartController = LineChartController(binding.chart)
         viewModel.heartBtHistory.observe(this) { heartBtHistory ->
             lineChartController.drawLineChart(heartBtHistory)
-        }
-        binding.buttonPlan.setOnClickListener {
-            startActivity(Intent(this, PlanActivity::class.java))
         }
     }
     @RequiresApi(Build.VERSION_CODES.O)
@@ -50,13 +45,17 @@ class MainActivity : AppCompatActivity() {
                 }
                 else -> {
                     // Result wasn't from Google Fit
-                    Log.d(TAG,"Result wasn't from Google Fit")
+                    Log.d(TAG, "Result wasn't from Google Fit")
                 }
             }
             else -> {
                 // Permission not granted
-                Log.d(TAG,"Permission not granted")
+                Log.d(TAG, "Permission not granted")
             }
         }
+    }
+
+    fun openPlanActivity() {
+        startActivity(Intent(this, PlanActivity::class.java))
     }
 }
