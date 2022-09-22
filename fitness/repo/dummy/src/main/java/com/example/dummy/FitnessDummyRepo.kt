@@ -1,5 +1,6 @@
 package com.example.dummy
 
+import com.example.domain.FitnessDataType
 import com.example.domain.FitnessRepo
 
 class FitnessDummyRepo : FitnessRepo {
@@ -10,17 +11,11 @@ class FitnessDummyRepo : FitnessRepo {
     private var setMoveMin: ((moveMin: Int) -> Unit)? = null
     private var setHeartBtHistory: ((setHeartBtHistory: List<Int>) -> Unit)? = null
     private var stepsCount = 1
-    override fun requestGoogleFitPermissions() {
-        readStepsCount()
-        readCaloriesCount()
-        readHeartPointsCount()
-        readDistenceWalkedCount()
-        readMoveMin()
-        readHeartBtHistory()
-    }
 
-    override fun readStepsCount() {
-        setSteps?.invoke(stepsCount++)
+    override fun requestGoogleFitPermissions() {
+        FitnessDataType.values().forEach {
+            readData(it)
+        }
     }
 
     override fun setOnStepsChange(setSteps: (steps: Int) -> Unit) {
@@ -31,20 +26,8 @@ class FitnessDummyRepo : FitnessRepo {
         this.setCalories = setCalories
     }
 
-    override fun readCaloriesCount() {
-        setCalories?.invoke(stepsCount)
-    }
-
     override fun setOnHeartPointsChange(setHeartPoints: (steps: Int) -> Unit) {
         this.setHeartPoints = setHeartPoints
-    }
-
-    override fun readHeartPointsCount() {
-        setHeartPoints?.invoke(stepsCount)
-    }
-
-    override fun readDistenceWalkedCount() {
-        setDistanceWalked?.invoke(stepsCount)
     }
 
     override fun setOnDistanceWalked(setDistanceWalked: (distanceWalked: Int) -> Unit) {
@@ -55,10 +38,6 @@ class FitnessDummyRepo : FitnessRepo {
         this.setMoveMin = setMoveMin
     }
 
-    override fun readMoveMin() {
-        setMoveMin?.invoke(stepsCount)
-    }
-
     override fun readHeartBtHistory() {
         val dummy_data = listOf(43, 52, 23, 53, 37, 42, 41)
         setHeartBtHistory?.invoke(dummy_data)
@@ -66,5 +45,17 @@ class FitnessDummyRepo : FitnessRepo {
 
     override fun setOnHeartBtHistory(setHeartBtHistory: (setHeartBtHistory: List<Int>) -> Unit) {
         this.setHeartBtHistory = setHeartBtHistory
+    }
+
+    override fun readData(fitnessDataType: FitnessDataType) {
+        stepsCount++
+        when (fitnessDataType) {
+            FitnessDataType.STEP -> setSteps?.invoke(stepsCount)
+            FitnessDataType.HEART_POINTS -> setHeartPoints?.invoke(stepsCount)
+            FitnessDataType.CALORIES -> setCalories?.invoke(stepsCount)
+            FitnessDataType.DISTANCE_COVERED -> setDistanceWalked?.invoke(stepsCount)
+            FitnessDataType.MOVE_MIN -> setMoveMin?.invoke(stepsCount)
+        }
+        readHeartBtHistory()
     }
 }

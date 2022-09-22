@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.domain.FitnessDataType
 import com.example.domain.FitnessRepo
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
@@ -15,7 +16,6 @@ import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.DataPoint
 import com.google.android.gms.fitness.data.DataSet
 import com.google.android.gms.fitness.data.DataType
-import com.google.android.gms.fitness.data.Field
 import com.google.android.gms.fitness.request.DataReadRequest
 import java.time.Instant
 import java.time.LocalDateTime
@@ -84,82 +84,28 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun readStepsCount() {
-        Fitness.getHistoryClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
-            .readDailyTotal(DataType.TYPE_STEP_COUNT_DELTA)
-            .addOnSuccessListener { result ->
-                val totalSteps =
-                    result.dataPoints.firstOrNull()?.getValue(Field.FIELD_STEPS)?.asInt() ?: 0
-                Log.i(TAG,"Total steps : $totalSteps")
-                setSteps?.invoke(totalSteps)
-
-                // Do something with totalSteps
-            }
-            .addOnFailureListener { e ->
-                Log.e(TAG, "There was a problem getting steps.", e)
-            }
-
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun readCaloriesCount() {
-        Fitness.getHistoryClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
-            .readDailyTotal(DataType.TYPE_CALORIES_EXPENDED)
-            .addOnSuccessListener { result ->
-                val totalCalories =
-                    result.dataPoints.firstOrNull()?.getValue(Field.FIELD_CALORIES)?.asFloat() ?: 0
-                Log.i(TAG,"Total Calories $totalCalories")
-                setCalories?.invoke(totalCalories.toInt())
-                // Do something with totalSteps
-            }
-            .addOnFailureListener { e ->
-                Log.e(TAG, "There was a problem getting steps.", e)
-            }
-
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun readHeartPointsCount() {
-        Fitness.getHistoryClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
-            .readDailyTotal(DataType.TYPE_HEART_POINTS)
-            .addOnSuccessListener { result ->
-                val totalHeartPoints =
-                    result.dataPoints.firstOrNull()?.getValue(Field.FIELD_INTENSITY)?.asFloat() ?: 0
-                Log.i(TAG,"Total Heart Points : $totalHeartPoints")
-                setHeartPoints?.invoke(totalHeartPoints.toInt())
-                // Do something with totalSteps
-            }
-            .addOnFailureListener { e ->
-                Log.e(TAG, "There was a problem getting steps.", e)
-            }
-
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun readDistenceWalkedCount() {
-        Fitness.getHistoryClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
-            .readDailyTotal(DataType.TYPE_DISTANCE_DELTA)
-            .addOnSuccessListener { result ->
-                val totalDistanceWalked =
-                    result.dataPoints.firstOrNull()?.getValue(Field.FIELD_DISTANCE )?.asFloat() ?: 0
-                Log.i(TAG,"Total distance walked $totalDistanceWalked")
-                setDistanceWalked?.invoke(totalDistanceWalked.toInt())
-            }
-            .addOnFailureListener { e ->
-                Log.e(TAG, "There was a problem getting steps.", e)
-            }
-
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun readMoveMin() {
-        Fitness.getHistoryClient(activity, GoogleSignIn.getAccountForExtension(activity, fitnessOptions))
-            .readDailyTotal(DataType.TYPE_MOVE_MINUTES)
-            .addOnSuccessListener { result ->
-                val totalMoveMin =
-                    result.dataPoints.firstOrNull()?.getValue(Field.FIELD_DURATION)?.asInt() ?: 0
-                Log.i(TAG, "Total moved min $totalMoveMin")
-                setMoveMin?.invoke(totalMoveMin)
+    override fun readData(fitnessDataType: FitnessDataType) {
+        val gFitDataType = GFitDataType.convert(fitnessDataType)
+        Fitness.getHistoryClient(
+            activity,
+            GoogleSignIn.getAccountForExtension(activity, fitnessOptions)
+        )
+            .readDailyTotal(gFitDataType.dataType)
+            .addOnSuccessListener { gFitResult ->
+                val resultAsValue =
+                    gFitResult.dataPoints.firstOrNull()?.getValue(gFitDataType.field)
+                val result = when (gFitDataType.incomingDataType) {
+                    GFitIncomingDataTypes.INT -> resultAsValue?.asInt() ?: 0
+                    GFitIncomingDataTypes.FLOAT -> resultAsValue?.asFloat()?.toInt() ?: 0
+                }
+                Log.i(TAG, "Total steps : $result")
+                when (fitnessDataType) {
+                    FitnessDataType.STEP -> setSteps?.invoke(result)
+                    FitnessDataType.HEART_POINTS -> setHeartPoints?.invoke(result)
+                    FitnessDataType.CALORIES -> setCalories?.invoke(result)
+                    FitnessDataType.DISTANCE_COVERED -> setDistanceWalked?.invoke(result)
+                    FitnessDataType.MOVE_MIN -> setMoveMin?.invoke(result)
+                }
             }
             .addOnFailureListener { e ->
                 Log.e(TAG, "There was a problem getting steps.", e)
@@ -203,7 +149,7 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
                         it.dataType.fields.map { field ->
                             Log.i(
                                 TAG,
-                                "\tField: ${field.name.toString()} Value: ${dp.getValue(field)}"
+                                "\tField: ${field.name} Value: ${dp.getValue(field)}"
                             )
                             dp.getValue(field).asInt()
                         }
@@ -242,17 +188,15 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun accessGoogleFit() {
-        Log.i(TAG,"accessGoogleFit")
+        Log.i(TAG, "accessGoogleFit")
         subscribeFitness()
         subscribeCalories()
         subscribeHeartPoints()
         subscribeDistanceWalked()
         subscribeMoveMin()
-        readStepsCount()
-        readCaloriesCount()
-        readHeartPointsCount()
-        readDistenceWalkedCount()
-        readMoveMin()
+        FitnessDataType.values().forEach {
+            readData(it)
+        }
         readHeartBtHistory()
     }
     fun logSubscription(){
@@ -339,7 +283,7 @@ class GoogleFitFitnessRepo(val activity: Activity): FitnessRepo {
             Log.i(TAG, "\tStart: ${dp.getStartTimeString()}")
             Log.i(TAG, "\tEnd: ${dp.getEndTimeString()}")
             for (field in dp.dataType.fields) {
-                Log.i(TAG, "\tField: ${field.name.toString()} Value: ${dp.getValue(field)}")
+                Log.i(TAG, "\tField: ${field.name} Value: ${dp.getValue(field)}")
             }
         }
     }

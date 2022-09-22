@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.domain.FitnessDataType
 import com.example.domain.FitnessRepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -53,11 +54,9 @@ class FitnessViewModel(application: Application) : AndroidViewModel(application)
     @RequiresApi(Build.VERSION_CODES.O)
     fun updateData() {
         viewModelScope.launch(Dispatchers.IO) {
-            fitnessRepo.readStepsCount()
-            fitnessRepo.readCaloriesCount()
-            fitnessRepo.readHeartPointsCount()
-            fitnessRepo.readDistenceWalkedCount()
-            fitnessRepo.readMoveMin()
+            FitnessDataType.values().forEach {
+                fitnessRepo.readData(it)
+            }
             fitnessRepo.readHeartBtHistory()
         }
     }
