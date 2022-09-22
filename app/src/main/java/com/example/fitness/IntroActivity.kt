@@ -11,6 +11,7 @@ class IntroActivity : AppCompatActivity() {
         val binding = ActivityIntroBinding.inflate(layoutInflater, null, false)
         setContentView(binding.root)
         binding.activity = this
+        supportActionBar?.hide()
 
     }
 

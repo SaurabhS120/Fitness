@@ -19,6 +19,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val binding = ActivityFitnessBinding.inflate(LayoutInflater.from(this), null, false)
         setContentView(binding.root)
+        supportActionBar?.hide()
         binding.lifecycleOwner = this
         val viewModel: FitnessViewModel by viewModels()
         this.viewModel = viewModel
