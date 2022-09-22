@@ -29,4 +29,8 @@
     <string name="week_1">Week 1</string>
     <string name="plans">Plans</string>
     <string name="intro_background">Intro Background</string>
+    <string name="dumbell">Dumbell</string>
+    <string name="treadmill">Treadmill</string>
+    <string name="skipping_rope">Skipping Rope</string>
+    <string name="tread_mill">Tread Mill</string>
 </resources>
