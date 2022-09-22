@@ -14,197 +14,210 @@
             type="com.example.fitness.MainActivity" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".MainActivity">
+        android:layout_height="wrap_content">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/workout_img_card"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="60sp"
-            app:cardCornerRadius="100sp">
+            tools:context=".MainActivity">
 
-            <ImageView
-                app:layout_constraintTop_toTopOf="parent"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/workout_img_card"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="60sp"
+                app:cardCornerRadius="100sp"
                 app:layout_constraintLeft_toLeftOf="parent"
-                android:layout_width="150sp"
-                android:layout_height="150sp"
-                android:src="@drawable/workout"
-                android:scaleType="centerCrop"
-                android:contentDescription="@string/workout_img" />
-        </androidx.cardview.widget.CardView>
+                app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintTop_toTopOf="@id/workout_img_card"
-            app:layout_constraintLeft_toRightOf="@id/workout_img_card"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/workout_img_card"
-            android:layout_marginHorizontal="24sp"
-            android:orientation="vertical"
-            android:gravity="center">
+                <ImageView
+                    android:layout_width="150sp"
+                    android:layout_height="150sp"
+                    android:contentDescription="@string/workout_img"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/workout"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.cardview.widget.CardView>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginHorizontal="24sp"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="@id/workout_img_card"
+                app:layout_constraintLeft_toRightOf="@id/workout_img_card"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/workout_img_card">
+
+                <TextView
+                    android:id="@+id/date_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@{viewModel.date}"
+                    tools:text="@string/dummy_date" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/your_activities"
+                    android:textColor="@color/dark_text"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
 
             <TextView
-                android:id="@+id/date_text"
+                android:id="@+id/calories_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@{viewModel.date}"
-                tools:text="@string/dummy_date" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/your_activities"
+                android:text="@{viewModel.caloriesLiveData}"
                 android:textColor="@color/dark_text"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                android:textSize="48sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/workout_img_card"
+                tools:text="calories" />
 
-        </LinearLayout>
+            <TextView
+                android:id="@+id/calories_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/total_kilocalories"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/calories_tv" />
 
+            <androidx.cardview.widget.CardView
+                android:id="@+id/details_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="24sp"
+                app:cardBackgroundColor="#C7ECF1"
+                app:cardCornerRadius="26sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/calories_title">
 
-        <TextView
-            android:id="@+id/calories_tv"
-            tools:text="calories"
-            android:text="@{viewModel.caloriesLiveData}"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/workout_img_card"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            android:textSize="48sp"
-            android:textStyle="bold"
-            android:textColor="@color/dark_text"/>
-
-        <TextView
-            android:id="@+id/calories_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/calories_tv"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            android:text="@string/total_kilocalories"/>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/details_card"
-            app:layout_constraintTop_toBottomOf="@id/calories_title"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardBackgroundColor="#C7ECF1"
-            app:cardCornerRadius="26sp"
-            android:layout_margin="24sp">
-
-        <TableLayout
-            app:layout_constraintTop_toBottomOf="@id/calories_title"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="12sp">
-            <TableRow>
-                <TextView
-                    android:id="@+id/steps_tv"
-                    tools:text="steps"
-                    android:text="@{viewModel.stepsLiveData}"
-                    android:layout_width="wrap_content"
+                <TableLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8sp"
-                    android:textAlignment="center"
-                    android:textColor="@color/dark_text"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:layout_weight="1"/>
-                <TextView
-                    android:id="@+id/heart_points_tv"
-                    tools:text="heart points"
-                    android:text="@{viewModel.heartPointsLiveData}"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8sp"
-                    android:textAlignment="center"
-                    android:textColor="@color/dark_text"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:layout_weight="1"/>
-                <TextView
-                    android:id="@+id/walked_distance_tv"
-                    tools:text="Walked distance"
-                    android:text="@{viewModel.walkedDistanceLiveData}"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8sp"
-                    android:textAlignment="center"
-                    android:textColor="@color/dark_text"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:layout_weight="1"/>
-            </TableRow>
-            <TableRow>
-                <TextView
-                    android:text="@string/steps"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8sp"
-                    android:textAlignment="center"
-                    android:layout_weight="1"/>
-                <TextView
-                    android:text="@string/points"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8sp"
-                    android:textAlignment="center"
-                    android:layout_weight="1"/>
-                <TextView
-                    android:text="@string/distance"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8sp"
-                    android:textAlignment="center"
-                    android:layout_weight="1"/>
-            </TableRow>
-        </TableLayout>
-        </androidx.cardview.widget.CardView>
+                    android:layout_margin="12sp"
+                    app:layout_constraintBottom_toTopOf="@id/button"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/calories_title">
 
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/chart"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_margin="24sp"
-            android:background="@color/white"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/details_card" />
+                    <TableRow>
 
-        <Button
-            android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/update_data"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:onClick="@{()->viewModel.updateData()}"
-            app:layout_constraintBottom_toBottomOf="parent" />
+                        <TextView
+                            android:id="@+id/steps_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8sp"
+                            android:layout_weight="1"
+                            android:text="@{viewModel.stepsLiveData}"
+                            android:textAlignment="center"
+                            android:textColor="@color/dark_text"
+                            android:textSize="24sp"
+                            android:textStyle="bold"
+                            tools:text="steps" />
 
-        <Button
-            android:id="@+id/button_plan"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/plans"
-            app:layout_constraintBottom_toTopOf="@id/button"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:onClick="@{()->activity.openPlanActivity()}"
-            app:layout_constraintStart_toStartOf="parent" />
+                        <TextView
+                            android:id="@+id/heart_points_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8sp"
+                            android:layout_weight="1"
+                            android:text="@{viewModel.heartPointsLiveData}"
+                            android:textAlignment="center"
+                            android:textColor="@color/dark_text"
+                            android:textSize="24sp"
+                            android:textStyle="bold"
+                            tools:text="heart points" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                        <TextView
+                            android:id="@+id/walked_distance_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8sp"
+                            android:layout_weight="1"
+                            android:text="@{viewModel.walkedDistanceLiveData}"
+                            android:textAlignment="center"
+                            android:textColor="@color/dark_text"
+                            android:textSize="24sp"
+                            android:textStyle="bold"
+                            tools:text="Walked distance" />
+                    </TableRow>
+
+                    <TableRow>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8sp"
+                            android:layout_weight="1"
+                            android:text="@string/steps"
+                            android:textAlignment="center" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8sp"
+                            android:layout_weight="1"
+                            android:text="@string/points"
+                            android:textAlignment="center" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8sp"
+                            android:layout_weight="1"
+                            android:text="@string/distance"
+                            android:textAlignment="center" />
+                    </TableRow>
+                </TableLayout>
+            </androidx.cardview.widget.CardView>
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/chart"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_margin="24sp"
+                android:background="@color/white"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/details_card" />
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{()->viewModel.updateData()}"
+                android:text="@string/update_data"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/chart" />
+
+            <Button
+                android:id="@+id/button_plan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{()->activity.openPlanActivity()}"
+                android:text="@string/plans"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/button" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
 </layout>
